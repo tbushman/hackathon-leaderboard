@@ -12,7 +12,8 @@ const expressValidation = require('express-validation');
 const helmet = require('helmet');
 const session = require('express-session');
 const debug = require('debug');
-
+// const mongoose = require('mongoose');
+// const MongoDBStore = require('connect-mongo')(session);
 const winstonInstance = require('./winston');
 const routes = require('../index.route');
 const config = require('./config');
@@ -49,7 +50,24 @@ app.use(helmet());
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
 
-app.use(session({ secret: config.cookieSecret, resave: true, saveUninitialized: true }));
+/* const store = new MongoDBStore({
+  mongooseConnection: mongoose.connection,
+  uri: 'mongodb://localhost/session_hackathon',
+  collection: 'mySessions'
+});
+
+store.on('error', (error) => {
+  log(error);
+}); */
+
+app.use(
+  session({
+    secret: config.cookieSecret,
+    resave: true,
+    saveUninitialized: true
+  /* , store*/
+  }
+));
 app.use(passport.initialize());
 app.use(passport.session());
 
