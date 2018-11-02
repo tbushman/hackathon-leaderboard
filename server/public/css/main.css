@@ -13,3 +13,9 @@
   width: 33px;
   height: auto;
 }
+td ul {
+  padding-left: 0;
+}
+ul > li {
+  list-style-type: none;
+}

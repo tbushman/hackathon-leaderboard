@@ -134,9 +134,7 @@ function deleteTeam(req, res) {
     User.update({ teamId: req.params.teamId }, { $set: { teamId: null } })
     .then(() => {
       Webhook.remove({ belongsTo: req.params.teamId })
-      .then(() => {
-        res.status(200).json('deleted team');
-      });
+      .then(() => res.redirect('/'));
     });
   });
 }

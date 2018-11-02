@@ -21,6 +21,10 @@ router
   .post(ifNoUserRedirect(), ifNoBody400, validate(validators.createTeam), teamCtrl.update);
 
 router
+  .route('/analyze/:teamId')
+  .get(teamCtrl.analyze);
+
+router
   .route('/delete/:teamId')
   .delete(ifNoUserRedirect(), ifNotOwnTeam400, teamCtrl.deleteTeam);
 

@@ -1,3 +1,8 @@
+.form-check
+  input#isOnLine.form-check-input(type='checkbox', v-model="checked")
+  label.form-check-label(for='isOnLine') Online only teams: 
+    span(v-text="checked")
+
 table.table(cellspacing="0px", width="100%", style="width: 100%;overflow:hidden;")
   thead
     
@@ -9,21 +14,15 @@ table.table(cellspacing="0px", width="100%", style="width: 100%;overflow:hidden;
       th Online-only
       th Lighthouse
       th Collaborators
+      th Screenshot
       // th(v-for='(key, j) in Object.keys(teams[0])', v-if="['_id', '__v'].indexOf(key) === -1" v-text='key', scope="col")
-  tbody
+
+
+  tbody(v-if="!checked")
     
+    tr(v-for='(team, i) in teams', v-if="team.isOnlineHackathon")
+      include team.pug
+
+  tbody(v-else-if="!checked")
     tr(v-for='(team, i) in teams')
-      th(scope="row", v-text="i + 1")
-      td(v-for='(key, j) in Object.keys(team)', v-if="['_id', '__v'].indexOf(key) === -1")
-        span(v-if="!Array.isArray(team[key])")
-          a(v-if="key === 'githubRepository'", v-bind:href="team[key]", v-text="team[key].split('https://github.com/')[1]")
-          a(v-else-if="key === 'siteUrl'", v-bind:href="team[key]", v-text="team[key]")
-          span(v-else-if="key === 'isOnlineHackathon'", v-text="!team[key] ? 'no' : 'yes'")
-        ul(v-else-if="key === 'collaborators'")
-          li.avatar(v-for="(member, k) in team[key]")
-            img(:src="`https://github.com/${member}.png`", :title="member")
-        span(v-else-if="key === 'lighthouse'")
-          ul(v-if="team[key].length", v-for="(result, l) in team[key]")
-            li(v-for="(metric, m) in Object.keys(result)", v-text="metric+':'+result[metric]")
-        
-        
+      include team.pug
