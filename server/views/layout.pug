@@ -51,7 +51,6 @@ html(lang='en')
         },
         beforeDestroy() {
           var self = this;
-          clearInterval(self.teamInterval);
           clearInterval(self.teamsInterval);
         },
         methods: {
@@ -101,11 +100,11 @@ html(lang='en')
                   itemA = a.name;
                   itemB = b.name;
                   break;
-                /*case 'isOnlineHackathon':
+                case 'isOnlineHackathon':
                   itemA = a.isOnlineHackathon;
                   itemB = b.isOnlineHackathon;
-                  break;*/
-                /*case 'lighthouse':
+                  break;
+                case 'lighthouse':
                   itemA = self.lighthousekeys.map(function(k){
                     if (a.lighthouse.length === 0) return 0;
                     return a.lighthouse[a.lighthouse.length - 1].k;
@@ -117,9 +116,9 @@ html(lang='en')
                     return b.lighthouse[b.lighthouse.length - 1].k;
                   }).reduce(function(acc, curr){
                     return acc + curr;
-                  }) / 5;*/
+                  }) / 5;
                   //console.log(itemA,itemB)
-                  //break;
+                  break;
                 default:
                   
               }
@@ -177,7 +176,7 @@ html(lang='en')
             var teamIsOnline = createTeamForm.querySelector('#isOnLine').checked;
             var team = {
               name: teamName,
-              collaborators: teamCollaborators.split(',').map(function(str) { return str.trim(); }).filter(Boolean),
+              collaborators: teamCollaborators.split(',').map(function(str) { return str.trim(); }).filter(function(item, pos,self) { return self.indexOf(item) == pos; }),
               githubRepository: teamRepo,
               siteUrl: teamSite,
               isOnlineHackathon: teamIsOnline
