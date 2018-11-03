@@ -34,7 +34,6 @@ html(lang='en')
               screenshot: 'Screenshot'
             },
             lighthousekeys: [ 'seo', 'best-practices', 'accessibility', 'pwa', 'performance'],
-            teamInterval: '',
             teamsInterval: ''
           } 
         },
@@ -42,11 +41,11 @@ html(lang='en')
           var self = this;
           self.log();
           if (self.teams && self.teams !== '' && self.teams !== ['']) {
+            self.getTeams();
             self.startTeamsPolling();
             self.sortBy('lighthouse', true);
           }
           if (self.team && self.team !== '' && self.team !== ['']) {
-            self.startTeamPolling();
             self.renderWebhooks();
           }
         },
@@ -68,12 +67,6 @@ html(lang='en')
             var self = this;
             self.interval = setInterval(function(){
               self.getTeams();
-            }, 30000);
-          },
-          startTeamPolling() {
-            var self = this;
-            self.interval = setInterval(function(){
-              self.getTeam();
             }, 30000);
           },
           getTeam() {
