@@ -33,7 +33,7 @@ html(lang='en')
               collaborators: 'Collaborators',
               screenshot: 'Screenshot'
             },
-            lighthousekeys: [ 'seo', 'best-practices', 'accessibility', 'pwa', 'performance'],
+            lighthousekeys: [ 'seo', 'best-practices', 'accessibility', 'pwa', 'performance']
             teamsInterval: ''
           }
         },
@@ -44,16 +44,12 @@ html(lang='en')
             self.getTeams();
             self.startTeamsPolling();
             self.sortBy('lighthouse', true);
-            self.startPolling();
           }
           if (self.team && self.team !== '' && self.team !== ['']) {
             self.renderWebhooks();
           }
         },
-        beforeDestroy() {
-          var self = this;
           clearInterval(self.teamsInterval);
-        },
         methods: {
           parseObj: function(obj){
             if (!obj) return ''
@@ -84,12 +80,6 @@ html(lang='en')
             .then((res) => {
               self.teams = res.data;
             })
-          },
-          startPolling() {
-            var self = this;
-            self.interval = setInterval(function(){
-              self.getTeams();
-            }, 30000);
           },
           sortBy(key, ascending) {
             console.log(key, ascending)
