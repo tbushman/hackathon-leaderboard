@@ -44,16 +44,41 @@ function create(req, res, next) {
         .split(',')
         .map(str => str.trim())
         .filter(Boolean);
-  const webhooks = createWebhooks();
+
   return Team.create({ ...team, collaborators })
     .then((newTeam) => {
       if (!newTeam) {
         res.status(500).json({ acknowledged: false });
         return null;
       }
-      return createRelationships(req.user._id, newTeam._id, webhooks).then(() =>
-        res.json({ acknowledged: true, webhooks })
+      return res.json({ acknowledged: true, teamId: newTeam._id });
+    })
+    .catch(next);
+}
+
+function newWebhooks(req, res, next) {
+  const webhook = createWebhooks();
+  return Team.findOne({ _id: req.params.teamId })
+    .then((newTeam) => {
+      if (!newTeam) {
+        res.status(500).json({ acknowledged: false });
+        return null;
+      }
+      return createRelationships(req.user._id, newTeam._id, webhook).then(() =>
+        res.json({ acknowledged: true, webhook })
       );
+    })
+    .catch(next);
+}
+
+function viewWebhooks(req, res, next) {
+  return Webhook.findOne({ name: 'github', belongsTo: req.params.teamId })
+    .then((webhook) => {
+      if (!webhook) {
+        res.status(500).json({ acknowledged: false });
+        return null;
+      }
+      return res.json({ acknowledged: true, webhook });
     })
     .catch(next);
 }
@@ -140,4 +165,4 @@ function deleteTeam(req, res) {
   });
 }
 
-module.exports = { create, update, list, analyze, single, deleteTeam };
+module.exports = { create, update, list, analyze, single, deleteTeam, newWebhooks, viewWebhooks };
