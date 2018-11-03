@@ -33,8 +33,7 @@ html(lang='en')
               collaborators: 'Collaborators',
               screenshot: 'Screenshot'
             },
-            lighthousekeys: [ 'seo', 'best-practices', 'accessibility', 'pwa', 'performance'],
-            interval: ''
+            lighthousekeys: [ 'seo', 'best-practices', 'accessibility', 'pwa', 'performance']
           } 
         },
         mounted: function() {
@@ -43,15 +42,10 @@ html(lang='en')
           if (self.teams && self.teams !== '' && self.teams !== ['']) {
             self.getTeams();
             self.sortBy('lighthouse', true);
-            self.startPolling();
           }
           if (self.team && self.team !== '' && self.team !== ['']) {
             self.renderWebhooks();
           }
-        },
-        beforeDestroy() {
-          var self = this;
-          clearInterval(self.interval);
         },
         methods: {
           parseObj: function(obj){
@@ -66,15 +60,8 @@ html(lang='en')
             var self = this;
             axios.get('/api/teams')
             .then((res) => {
-              console.log(res.data[0]);
               self.teams = res.data;
             })
-          },
-          startPolling() {
-            var self = this;
-            self.interval = setInterval(function(){
-              self.getTeams();
-            }, 30000);
           },
           sortBy(key, ascending) {
             console.log(key, ascending)
