@@ -60,15 +60,16 @@ function create(req, res, next) {
 
 function update(req, res) {
   const { body: team } = req;
-  const collaborators = team.collaborators
-    .split(',')
-    .map(str => str.trim())
-    .filter(Boolean);
+  const collaborators = Array.isArray(team.collaborators)
+    ? team.collaborators
+    : team.collaborators
+        .split(',')
+        .map(str => str.trim())
+        .filter(Boolean);
   team.collaborators = collaborators;
-  Team.findOneAndUpdate(
+  Team.update(
     { _id: req.params.teamId },
-    { $set: team },
-    { safe: true, new: true, multi: false }
+    team
   ).then(() => res.json({ acknowledged: true }));
 }
 /* updates lighthouse scores for a team */
