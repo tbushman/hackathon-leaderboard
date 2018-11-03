@@ -41,8 +41,9 @@ td(v-for="(key, j) in Object.keys(team)", v-if="key === 'collaborators'")
 td(v-for="(key, j) in Object.keys(team)", v-if="key === 'screenshot'")
 
   span.screenshot
-    img(v-bind:src="team[key]", v-bind:title="'screenshot for team '+ team.name", v-bind:alt="'screenshot for team '+ team.name")
+    img(v-for="(screen, n) in team[key]", v-if="n === team[key].length", v-bind:src="team[key]", v-bind:title="'screenshot for team '+ team.name", v-bind:alt="'screenshot for team '+ team.name")
 
 td(v-if="team && Object.keys(team).indexOf('screenshot') === -1")
+
   span.screenshot
-    img(v-bind:src="'/images/fcc_mock_screenshot.png'", v-bind:title="'screenshot'", v-bind:alt="'screenshot'")
+    img(src="/images/fcc_mock_screenshot.png", v-bind:title="'screenshot'", v-bind:alt="'screenshot'")
