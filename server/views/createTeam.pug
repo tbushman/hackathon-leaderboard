@@ -29,9 +29,12 @@ block content
               label(for='team-collab') Team Collaborators
               input#team-collab.form-control(type='text', aria-describedby='team-collab-help', placeholder='')
               small#team-collab-help.form-text.text-muted A comma separated list of Github usernames.
-            .form-check
-              input#isOnLine.form-check-input(type='checkbox', value='')
-              label.form-check-label(for='isOnLine')
-                | Online only team
+            .form-check.row
+              .col
+                input#isOnLine(type="radio", v-model="checked")
+                label(for="isOnLine") The online hackathon
+              .col
+                input(type="radio", id="inPerson", value="In-person", v-model="picked")
+                label(for="inPerson") The in-person hackathon in San Francisco
 
             button.btn.btn-primary(type='submit') Submit
