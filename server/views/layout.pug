@@ -15,13 +15,12 @@ html(lang='en')
             webhooks: '',
             checked: false,
             picked: 
-            /*(this.parseObj(!{JSON.stringify(team)}) !== '' ? 
+            (this.parseObj(!{JSON.stringify(team)}) !== '' ? 
               (
                 this.parseObj(!{JSON.stringify(team)}).isOnlineHackathon ?
-                'isOnLine' :
-                'inPerson'
-              ) : 'All',*/
-              'Online Only',
+                'Online Only' :
+                'In-person'
+              ) : 'Online Only'),
             ascending: true,
             buildStatuses: ['initial', 'pending', 'complete', 'failed'],
             columns: {
