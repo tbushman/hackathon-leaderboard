@@ -14,6 +14,6 @@ td(v-for='(key, j) in Object.keys(team)', v-if="['_id', '__v'].indexOf(key) === 
         strong(v-text="metric+': '")
         span(v-if="metric === 'date'", v-text="new Date(result[metric]).getFullYear() + '/'+ new Date(result[metric]).getMonth()+'/'+ new Date(result[metric]).getDate()+' '+ new Date(result[metric]).getHours()+':'+ new Date(result[metric]).getMinutes()")
         span(v-else-if="metric !== 'date'", v-text="result[metric]")
-td(v-if="!team.screenshot")
+td(v-if="team && !team.screenshot")
   span.screenshot
     img(v-bind:src="'/images/fcc_mock_screenshot.png'", v-bind:title="'screenshot'", v-bind:alt="'screenshot'")
