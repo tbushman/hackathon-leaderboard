@@ -97,6 +97,8 @@ html(lang='en')
             var self = this;
             self.ascending = !ascending;
             self.teams.sort(function(a, b){
+              // a is team
+              
               var itemA, itemB;
               switch(key) {
                 case 'buildStatus':
@@ -110,7 +112,7 @@ html(lang='en')
                   itemA = a.isOnlineHackathon;
                   itemB = b.isOnlineHackathon;
                   break;*/
-                case 'lighthouse':
+                /*case 'lighthouse':
                   itemA = self.lighthousekeys.map(function(k){
                     if (a.lighthouse.length === 0) return 0;
                     return a.lighthouse[a.lighthouse.length - 1].k;
@@ -122,9 +124,9 @@ html(lang='en')
                     return b.lighthouse[b.lighthouse.length - 1].k;
                   }).reduce(function(acc, curr){
                     return acc + curr;
-                  }) / 5;
-                  console.log(itemA,itemB)
-                  break;
+                  }) / 5;*/
+                  //console.log(itemA,itemB)
+                  //break;
                 default:
                   
               }
