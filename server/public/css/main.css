@@ -22,7 +22,7 @@ body {
 }
 .screenshot {
   position: relative;
-  max-width: 120px;
+  width: 100%;
 }
 .screenshot img {
   width: 100%;
