@@ -72,7 +72,7 @@ function newWebhooks(req, res, next) {
 }
 
 function viewWebhooks(req, res, next) {
-  return Webhook.findOne({ name: 'github', belongsTo: req.params.teamId })
+  return Webhook.findOne({ name: 'netlify', belongsTo: req.params.teamId })
     .then((webhook) => {
       if (!webhook) {
         res.status(500).json({ acknowledged: false });
