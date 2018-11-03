@@ -12,7 +12,17 @@ html(lang='en')
         data: function data() { return { 
             teams: this.parseArr(!{JSON.stringify(teams)}),
             team: this.parseObj(!{JSON.stringify(team)}),
-            checked: false
+            checked: false,
+            picked: 'All',
+            columns: {
+              name: 'Team Name',
+              githubRepository: 'Repo',
+              siteUrl: 'Site',
+              isOnlineHackathon: 'Online-only',
+              lighthouse: 'Lighthouse',
+              collaborators: 'Collaborators',
+              screenshot: 'Screenshot'
+            }
           } 
         },
         mounted: function() {
@@ -70,7 +80,15 @@ html(lang='en')
           handleFormSubmit(e) {
             var self = this;
             e.preventDefault();
-            var createTeamForm = document.getElementById('create-team-form');
+            var axiosurl, msg;
+            if (e.target.getAttribute('id') === 'create-team-form') {
+              axiosurl = '/api/teams';
+              msg = 'creat'
+            } else {
+              axiosurl = `/api/teams/${self.team._id}`
+              msg = 'updat'
+            }
+            var createTeamForm = document.getElementById('create-team-form') || document.getElementById('update-team-form');
             var flashContainer = document.getElementById('flash-container');
             var actionContainer = document.getElementById('team-form-or-webhook');
             var teamName = createTeamForm.querySelector('#team-name').value;
@@ -85,13 +103,13 @@ html(lang='en')
               siteUrl: teamSite,
               isOnlineHackathon: teamIsOnline
             }
-            return axios.post('/api/teams', team).then(function(response) {
+            return axios.post(axiosurl, team).then(function(response) {
              var status = response.status;
               if (parseInt(status, 10) === 200) {
-                self.createFlash('success', 'Your team has been created!<br><br>Please make note of your webhooks below');
+                self.createFlash('success', 'Your team has been '+msg+'ed!<br><br>Please make note of your webhooks below');
                 return response.data.webhooks;
               } else {
-                return self.createFlash('warning', 'Something went wrong creating your team')
+                return self.createFlash('warning', 'Something went wrong '+msg+'ing your team')
               }
             })
             .then(function(webhooks) {
@@ -102,12 +120,12 @@ html(lang='en')
             })
             .catch(function(error) {
               console.error(error);
-              return self.createFlash('danger', 'Something went wrong creating your team, more info in the console')
+              return self.createFlash('danger', 'Something went wrong '+msg+'ing your team, more info in the console')
             })
           },
           renderWebhooks(webhooks) {
             var self = this;
-            var createTeamForm = document.getElementById('create-team-form');
+            var createTeamForm = document.getElementById('create-team-form') || document.getElementById('update-team-form');
             var flashContainer = document.getElementById('flash-container');
             var actionContainer = document.getElementById('team-form-or-webhook');
             var webhookPanel = document.createElement('DIV');
@@ -151,9 +169,12 @@ html(lang='en')
           removeTeam() {
             var self = this;
             if (self.team && self.team !== '') {
-              axios.delete(`/api/teams/delete/${self.team._id}`)
+              axios.post(`/api/teams/delete/${self.team._id}`)
               .then((res) => {
-                console.log(res)
+                window.location.href = '/';
+              })
+              .catch((err) => {
+                console.log(err)
               })
             }
           },

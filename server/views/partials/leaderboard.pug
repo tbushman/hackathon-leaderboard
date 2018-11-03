@@ -1,28 +1,34 @@
-.form-check
-  input#isOnLine.form-check-input(type='checkbox', v-model="checked")
-  label.form-check-label(for='isOnLine') Online only teams: 
-    span(v-text="checked")
+.form-check.row
+  .col
+    input(type="radio", id="all", value="All", v-model="picked")
+    label(for="all") All
+  .col
+    input(type="radio", id="online", value="Online", v-model="picked")
+    label(for="online") Online
+  .col
+    input(type="radio", id="inPerson", value="In-person", v-model="picked")
+    label(for="inPerson") In-Person
+
+    
 
 table.table(cellspacing="0px", width="100%", style="width: 100%;overflow:hidden;")
   thead
     
     tr
-      th(scope="row", v-text="'rank'")
-      th Team Name
-      th Repo
-      th Site
-      th Online-only
-      th Lighthouse
-      th Collaborators
-      th Screenshot
-      // th(v-for='(key, j) in Object.keys(teams[0])', v-if="['_id', '__v'].indexOf(key) === -1" v-text='key', scope="col")
+      th(scope="row", v-text="'rank'", width="33")
+      th(v-for='(key, j) in Object.keys(teams[0])', v-if="['_id', '__v'].indexOf(key) === -1" v-text='columns[key]', scope="col", width="120")
+      th(v-if="!team.screenshot", width="120", scope="col") Screenshot
 
-
-  tbody(v-if="!checked")
+  tbody(v-if="picked === 'Online Only'")
     
     tr(v-for='(team, i) in teams', v-if="team.isOnlineHackathon")
       include team.pug
 
-  tbody(v-else-if="!checked")
+  tbody(v-if="picked === 'In-person'")
+    
+    tr(v-for='(team, i) in teams', v-if="!team.isOnlineHackathon")
+      include team.pug
+
+  tbody(v-if="picked === 'All'")
     tr(v-for='(team, i) in teams')
       include team.pug

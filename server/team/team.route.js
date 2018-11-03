@@ -26,6 +26,6 @@ router
 
 router
   .route('/delete/:teamId')
-  .delete(ifNoUserRedirect(), ifNotOwnTeam400, teamCtrl.deleteTeam);
+  .post(ifNoUserRedirect(), ifNotOwnTeam400, teamCtrl.deleteTeam);
 
 module.exports = router;
