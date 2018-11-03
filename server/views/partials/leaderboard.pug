@@ -17,7 +17,7 @@ table.table(cellspacing="0px", width="100%", style="width: 100%;overflow:hidden;
       th(v-on:click="sortBy('name', ascending)", style="cursor: pointer;") Team Name
       th Repo
       th Site
-      th
+      th(style="text-align:center;", width="200") Hackathon
         ul.hackathon-status-header Hackathon
           div.hackathon-status-header-options
             li.avatar Online 
@@ -25,7 +25,7 @@ table.table(cellspacing="0px", width="100%", style="width: 100%;overflow:hidden;
 
       th(v-on:click="sortBy('lighthouse', ascending)", style="cursor: pointer;") Lighthouse
       th Collaborators
-      th Screenshot
+      th(width="120") Screenshot
 
   tbody(v-if="picked === 'Online Only'")
     

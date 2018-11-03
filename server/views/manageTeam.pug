@@ -31,10 +31,10 @@ block content
           
           .form-group.form-check
             legend Which hackathon are you participating in?
-            input#isOnLine(type="radio", v-model="picked", name="isOnlineHackathon", checked= team.isOnlineHackathon, required)
+            input#isOnLine(type="radio", value="Online Only", v-model="picked",  name="isOnlineHackathon", checked= team.isOnlineHackathon, aria-checked= team.isOnlineHackathon, required)
             label(for="isOnLine") The online hackathon  
             br
-            input(type="radio", id="inPerson", value="In-person", v-model="picked", name="isOnlineHackathon", checked= !team.isOnlineHackathon, required)
+            input(type="radio", id="inPerson", value="In-person", v-model="picked", name="isOnlineHackathon", checked= !team.isOnlineHackathon, aria-checked= !team.isOnlineHackathon, required)
             label(for="inPerson") The in-person hackathon in San Francisco
           
           .form-group.row
