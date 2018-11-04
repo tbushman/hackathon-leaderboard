@@ -33,7 +33,7 @@ html(lang='en')
               collaborators: 'Collaborators',
               screenshot: 'Screenshot'
             },
-            lighthousekeys: [ 'seo', 'best-practices', 'accessibility', 'pwa', 'performance']
+            lighthousekeys: [ 'seo', 'best-practices', 'accessibility', 'pwa', 'performance'],
             teamsInterval: ''
           }
         },
@@ -49,7 +49,10 @@ html(lang='en')
             self.renderWebhooks();
           }
         },
+        beforeDestroy() {
+          var self = this;
           clearInterval(self.teamsInterval);
+        },
         methods: {
           parseObj: function(obj){
             if (!obj) return ''
