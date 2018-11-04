@@ -37,6 +37,7 @@ html(lang='en')
             lighthousekeys: [ 'seo', 'best-practices', 'accessibility', 'pwa', 'performance'],
             teamsInterval: ''
           }
+
         },
         beforeCreate: function() {
           if (self.teams && self.teams !== '' && self.teams !== ['']) {
@@ -71,6 +72,9 @@ html(lang='en')
           parseArr: function(arr){
             if (!arr) return []
             return arr;
+          },
+          validateVote(){
+            
           },
           getTeam(){
             var self = this;
