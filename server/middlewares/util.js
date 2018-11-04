@@ -1,6 +1,10 @@
 const { isEmpty } = require('lodash');
 const Team = require('../team/team.model');
 
+function castMaybeStringToArray(maybeString) {
+  return Array.isArray(maybeString) ? maybeString : maybeString.split(',');
+}
+
 exports.ifNoBody400 = function ifNoBody400(req, res, next) {
   const { body } = req;
   if (!body || isEmpty(body)) {
@@ -19,12 +23,9 @@ exports.ifNotOwnTeam400 = function ifNotOwnTeam400(req, res, next) {
 
 exports.ifDuplicate400 = async function ifDuplicate400(req, res, next) {
   const { body } = req;
-  const collaborators = Array.isArray(body.collaborators)
-    ? body.collaborators
-    : body.collaborators
-        .split(',')
-        .map(str => str.trim().replace(/@/g, ''))
-        .filter(Boolean);
+  const collaborators = castMaybeStringToArray(body.collaborators)
+    .map(str => str.trim().replace(/@/g, ''))
+    .filter(Boolean);
   const filtered = (await Promise.all(collaborators.map(member =>
         Team.find({ collaborators: member })
         .then((dup) => {
