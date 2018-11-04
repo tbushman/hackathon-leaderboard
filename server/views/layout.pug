@@ -45,7 +45,6 @@ html(lang='en')
           if (self.teams && self.teams !== '' && self.teams !== []) {
             self.getTeams();
             self.startTeamsPolling();
-            self.sortBy(self.sortKey, !self.ascending);
           }
         },
         beforeDestroy() {
