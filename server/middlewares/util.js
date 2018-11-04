@@ -25,7 +25,7 @@ exports.ifDuplicate400 = async function ifDuplicate400(req, res, next) {
   const { body } = req;
   const collaborators = castMaybeStringToArray(body.collaborators)
     .map(str => str.trim().replace(/@/g, ''))
-    .filter((item, pos, self) => self.indexOf(item) === pos);
+    .filter((item, pos, self) => !!item && self.indexOf(item) === pos);
   const filtered = (await Promise.all(collaborators.map(member =>
         Team.find({ _id: { $ne: req.params.teamId }, collaborators: member })
         .then((dup) => {
