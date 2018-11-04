@@ -42,7 +42,10 @@ function createRelationships(userId, teamId, webhooks) {
 function create(req, res, next) {
   const { body: team } = req;
   const collaborators = castMaybeStringToArray(team.collaborators)
-    .map(str => str.trim().replace(/@/g, ''))
+    .map((str) => {
+      console.log(str.trim().replace(/@/g, ''));
+      return str.trim().replace(/@/g, '');
+    })
     .filter(Boolean);
 
   return Team.create({ ...team, collaborators })
