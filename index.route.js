@@ -38,6 +38,9 @@ router.get('/', (req, res) => {
 router.get('/signout', (req, res) => res.redirect('/api/auth/signout'));
 
 router.get('/team', ifNoUserRedirect(), (req, res, next) => {
+  if (!config.isOpenForRegistrations) {
+    return res.redirect('/');
+  }
   const { teamId } = req.user;
   if (teamId) {
     return Promise.all([
