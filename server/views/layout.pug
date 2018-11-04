@@ -10,6 +10,7 @@ html(lang='en')
       new Vue({
         el: '#vue',
         data: function data() { return {
+            userId: this.parseObj(!{JSON.stringify(session.userId)}),
             teams: this.parseArr(!{JSON.stringify(teams)}),
             team: this.parseObj(!{JSON.stringify(team)}),
             webhooks: '',
@@ -37,6 +38,14 @@ html(lang='en')
             teamsInterval: ''
           }
         },
+        beforeCreate: function() {
+          if (self.teams && self.teams !== '' && self.teams !== ['']) {
+            self.getTeams();
+          }
+          if (self.team && self.team !== '' && self.team !== ['']) {
+            self.getTeam();
+          }
+        },
         mounted: function() {
           var self = this;
           self.log();
@@ -46,6 +55,7 @@ html(lang='en')
             self.sortBy('lighthouse', true);
           }
           if (self.team && self.team !== '' && self.team !== ['']) {
+            self.getTeam();
             self.renderWebhooks();
           }
         },
@@ -62,20 +72,12 @@ html(lang='en')
             if (!arr) return []
             return arr;
           },
-          startTeamsPolling() {
+          getTeam(){
             var self = this;
-            self.interval = setInterval(function(){
-              self.getTeams();
-            }, 30000);
-          },
-          getTeam() {
-            var self = this;
-            if (self.team && self.team !== '') {
-              axios.get(`/api/teams/${self.team._id}`)
-              .then((res) => {
-                self.team = res.data;
-              })
-            }
+            axios.get(`/api/teams/${self.userId}`)
+            .then((res) => {
+              self.team = res.data;
+            })
           },
           getTeams() {
             var self = this;

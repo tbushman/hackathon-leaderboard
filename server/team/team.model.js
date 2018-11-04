@@ -42,6 +42,11 @@ const TeamSchema = new mongoose.Schema({
       },
       message: props => `${props.value} is not a valid build status`
     }
+  },
+  vote: {
+    canVote: Boolean,
+    votesFor: [String],
+    receivedVotes: [String]
   }
 });
 
