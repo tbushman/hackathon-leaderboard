@@ -4,8 +4,8 @@ td
     label.btn.btn-primary(v-text="(votes.indexOf(team._id) !== -1 ? 'selected' : '')", v-bind:class="{ active: votes.indexOf(team._id) !== -1 }")
     input(
       type="checkbox",
-      :id="'vote_'+team._id",
+      v-bind:id="'vote_'+team._id",
       v-model="votes",
-      :value="team._id",
-      v-on:click="validateVote( (votes.indexOf(team._id) !== -1 ? team._id : encodeURIComponent(JSON.stringify(votes))), (votes.indexOf(team._id) === -1), $event)",
-      :checked="votes.indexOf(team._id) !== -1")
+      v-bind:value="team._id",
+      v-on:click="initValidateVote(team._id)",
+      v-bind:checked="votes.indexOf(team._id) !== -1")

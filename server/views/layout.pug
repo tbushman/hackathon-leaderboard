@@ -66,13 +66,22 @@ html(lang='en')
             if (!arr) return []
             return arr;
           },
-          validateVote(voteForThisId, add, e){
+          initValidateVote(teamId) {
+            var self = this;
+            return self.validateVote(
+              self.votes.indexOf(teamId) !== -1 ?
+                teamId :
+                encodeURIComponent(JSON.stringify(self.votes)
+              ),
+              (self.votes.indexOf(teamId) === -1))
+          },
+          validateVote(voteForThisId, add){
             var self = this;
             if (self.votes.length === 3) {
               return;
             } else {
               self.votes = voteForThisId
-              console.log(voteForThisId, add, e)
+              console.log(voteForThisId, add)
               // voteForThisId is an array if add === true
               // using mongodb $set for it in:
               axios.post(`/api/teams/vote/${self.userId}/${voteForThisId}/${add}`)
