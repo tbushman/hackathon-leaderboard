@@ -38,7 +38,7 @@ html(lang='en')
             teamsInterval: '',
             votes: 
             (this.parseObj(!{JSON.stringify(team)}) !== '' ?
-              this.parseObj(!{JSON.stringify(team.vote.votesFor)}) :
+              this.parseObj(!{JSON.stringify(team)}).vote.votesFor :
               []
             )
           }
@@ -68,7 +68,7 @@ html(lang='en')
           validateVote(voteForThisId, add){
             var self = this;
             console.log(self.votes)
-            if (self.votes.length === 3) {
+            if (self.votes.length > 3) {
               self.votes.pop();
               return;
             } else {
