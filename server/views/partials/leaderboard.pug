@@ -12,6 +12,8 @@ table.table(cellspacing="0px", width="100%", style="width: 100%;overflow:hidden;
 
     tr
       th Vote
+        p(style="margin:0;")
+          small (pick three)
         //(v-if="team && team.canVote")
         
       th(v-on:click="sortBy('buildStatus', ascending)", width="120", style="cursor:pointer;") Build Status
