@@ -35,9 +35,9 @@ html(lang='en')
               screenshot: 'Screenshot'
             },
             lighthousekeys: [ 'seo', 'best-practices', 'accessibility', 'pwa', 'performance'],
-            teamsInterval: ''
+            teamsInterval: '',
+            votes: []
           }
-
         },
         beforeCreate: function() {
           if (self.teams && self.teams !== '' && self.teams !== ['']) {
@@ -74,7 +74,11 @@ html(lang='en')
             return arr;
           },
           validateVote(){
-            
+            var self = this;
+            if (self.votes.length === 3) {
+              self.votes.pop();
+              return;
+            }
           },
           getTeam(){
             var self = this;
