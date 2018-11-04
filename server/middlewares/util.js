@@ -25,20 +25,22 @@ exports.ifDuplicate400 = function ifDuplicate400(req, res, next) {
         .map(str => str.trim().replace(/@/g, ''))
         .filter(Boolean);
   async function returnFiltered() {
-    return new Promise((resolve, reject) => {
-      function filterCollaborators() {
-        collaborators.filter(member =>
-          Team.findOne({ collaborators: member })
-          .then((dup) => {
-            if (dup) return true;
-            return false;
-          })
-        );
-      }
-      
-    })
+    await new Promise((resolve, reject) =>
+      collaborators.filter(member =>
+        Team.find({ collaborators: member })
+        .then((dup) => {
+          if (dup.length > 0) return false;
+          return true;
+        })
+        .catch((err) => {
+          if (err) {
+            reject(err);
+          }
+        })
+      )
+    );
   }
-  const filtered = await returnFiltered();
-  if (filtered.length) return res.sendStatus(400);
+  const filtered = returnFiltered();
+  if (filtered.length !== collaborators.length) return res.sendStatus(400);
   return next();
 };
