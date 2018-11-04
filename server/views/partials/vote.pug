@@ -7,5 +7,5 @@ td
       :id="'vote_'+team._id",
       v-model="votes",
       :value="team._id",
-      v-on:click="validateVote(team._id, (votes.indexOf(team._id) === -1), $event)",
+      v-on:click="validateVote( (votes.indexOf(team._id) !== -1 ? team._id : encodeURIComponent(JSON.stringify(votes))), (votes.indexOf(team._id) === -1), $event)",
       :checked="votes.indexOf(team._id) !== -1")

@@ -51,6 +51,7 @@ html(lang='en')
             self.startTeamsPolling();
             self.sortBy('lighthouse', true);
           }
+          console.log(self.team)
         },
         beforeDestroy() {
           var self = this;
@@ -70,6 +71,10 @@ html(lang='en')
             if (self.votes.length === 3) {
               return;
             } else {
+              self.votes = voteForThisId
+              console.log(voteForThisId, add, e)
+              // voteForThisId is an array if add === true
+              // using mongodb $set for it in:
               axios.post(`/api/teams/vote/${self.userId}/${voteForThisId}/${add}`)
               .then(function(result){
                 self.team = result.data;

@@ -42,10 +42,7 @@ function createRelationships(userId, teamId, webhooks) {
 function create(req, res, next) {
   const { body: team } = req;
   const collaborators = castMaybeStringToArray(team.collaborators)
-    .map((str) => {
-      console.log(str.trim().replace(/@/g, ''));
-      return str.trim().replace(/@/g, '');
-    })
+    .map(str => str.trim().replace(/@/g, ''))
     .filter(Boolean);
 
   return Team.create({ ...team, collaborators })
@@ -107,9 +104,10 @@ vote: {
 */
 
 function vote(req, res) {
-  const voteKey = (req.params.isAdd ? '$push' : '$pull');
+  const voteKey = (req.params.isAdd ? '$set' : '$pull');
   const voteObj = {};
-  voteObj[voteKey] = { 'vote.votesFor': req.params.voteForThisId };
+  const decodedVoteId = castMaybeStringToArray(decodeURIComponent(req.params.voteForThisId));
+  voteObj[voteKey] = { 'vote.votesFor': decodedVoteId };
   User.findOne({ _id: req.params.userId })
   .then((user) => {
     Team.findOneAndUpdate(
@@ -125,20 +123,30 @@ function vote(req, res) {
       const pushKey = (req.params.isAdd ? '$push' : '$pull');
       const pushObj = {};
       pushObj[pushKey] = { 'vote.receivedVotes': team._id };
-      Team.findOneAndUpdate(
-        {
-          _id: req.params.voteForThisId
-        },
-        pushObj,
-        {
-          new: true, safe: true, multi: false
-        }
-      )
-      .then((newTeam) => {
-        if (!newTeam) {
-          return res.status(200).json({});
-        }
-        return res.status(200).json(newTeam);
+      console.log('!!!!!!!!!!!!!!!!');
+      console.log(req.params.voteForThisId);
+      decodedVoteId.forEach((id) => {
+        Team.findOne({ _id: id })
+        .then((t) => {
+          if (t.vote.receivedVotes.indexOf(team._id) !== -1) {
+            return res.status(200).json({});
+          }
+          return Team.findOneAndUpdate(
+            {
+              _id: req.params.voteForThisId
+            },
+            pushObj,
+            {
+              new: true, safe: true, multi: false
+            }
+          )
+          .then((newTeam) => {
+            if (!newTeam) {
+              return res.status(200).json({});
+            }
+            return res.status(200).json(newTeam);
+          });
+        });
       });
     });
   });
