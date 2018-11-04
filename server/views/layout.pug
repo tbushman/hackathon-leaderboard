@@ -191,6 +191,9 @@ html(lang='en')
                 return self.createFlash('warning', 'Something went wrong '+msg+'ing your team')
               }
             })
+            .catch(function(){
+              self.createFlash('warning', 'Something went wrong '+msg+'ing your team. Collaborators may not belong to more than one team.');
+            })
           },
           removeTeam() {
             var self = this;
