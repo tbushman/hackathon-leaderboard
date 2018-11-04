@@ -10,6 +10,7 @@ html(lang='en')
       new Vue({
         el: '#vue',
         data: function data() { return {
+          userId: this.parseObj(!{JSON.stringify(session.userId)}),
             teams: this.parseArr(!{JSON.stringify(teams)}),
             team: this.parseObj(!{JSON.stringify(team)}),
             webhooks: this.parseObj(!{JSON.stringify(webhooks)}),
@@ -34,7 +35,8 @@ html(lang='en')
               screenshot: 'Screenshot'
             },
             lighthousekeys: [ 'seo', 'best-practices', 'accessibility', 'pwa', 'performance'],
-            teamsInterval: ''
+            teamsInterval: '',
+            votes: []
           }
         },
         mounted: function() {
@@ -58,6 +60,13 @@ html(lang='en')
           parseArr: function(arr){
             if (!arr) return []
             return arr;
+          },
+          validateVote(){
+            var self = this;
+            if (self.votes.length === 3) {
+              self.votes.pop();
+              return;
+            }
           },
           startTeamsPolling() {
             var self = this;
