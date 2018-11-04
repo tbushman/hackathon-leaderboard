@@ -67,13 +67,12 @@ html(lang='en')
           },
           validateVote(voteForThisId, add, e){
             var self = this;
-            console.log(self.votes)
             if (self.votes.length === 3) {
               return;
             } else {
               axios.post(`/api/teams/vote/${self.userId}/${voteForThisId}/${add}`)
               .then(function(result){
-                console.log(result);
+                self.team = result.data;
               })
             }
           },
