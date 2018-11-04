@@ -21,6 +21,22 @@ router
   .post(ifNoUserRedirect(), ifNoBody400, validate(validators.createTeam), teamCtrl.update);
 
 router
+<<<<<<< HEAD
+=======
+  .route('/vote/:teamId/:voteForThisId/:isAdd')
+  .post(ifNoUserRedirect(), teamCtrl.vote);
+
+router
+  .route('/webhooks/:teamId')
+  .get(teamCtrl.viewWebhooks)
+  .post(teamCtrl.newWebhooks);
+
+router
+  .route('/analyze/:teamId')
+  .get(teamCtrl.analyze);
+
+router
+>>>>>>> vote
   .route('/delete/:teamId')
   .post(ifNoUserRedirect(), ifNotOwnTeam400, teamCtrl.deleteTeam);
 

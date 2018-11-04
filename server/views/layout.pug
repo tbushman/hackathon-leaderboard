@@ -36,7 +36,11 @@ html(lang='en')
             },
             lighthousekeys: [ 'seo', 'best-practices', 'accessibility', 'pwa', 'performance'],
             teamsInterval: '',
-            votes: []
+            votes: 
+            (this.parseObj(!{JSON.stringify(team)}) !== '' ?
+              this.parseObj(!{JSON.stringify(team.vote.votesFor)}) :
+              []
+            )
           }
         },
         mounted: function() {
@@ -61,11 +65,17 @@ html(lang='en')
             if (!arr) return []
             return arr;
           },
-          validateVote(){
+          validateVote(voteForThisId, add){
             var self = this;
+            console.log(self.votes)
             if (self.votes.length === 3) {
               self.votes.pop();
               return;
+            } else {
+              axios.post(`/api/teams/vote/${self.team._id}/${voteForThisId}/${add}`)
+              .then(function(result){
+                console.log(result);
+              })
             }
           },
           startTeamsPolling() {
