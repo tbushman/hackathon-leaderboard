@@ -107,34 +107,36 @@ function vote(req, res) {
   const voteKey = (req.params.isAdd ? '$push' : '$pull');
   const voteObj = {};
   voteObj[voteKey] = { 'vote.votesFor': req.params.voteForThisId };
-
-  Team.findOneAndUpdate(
-    {
-      _id: req.params.teamId
-    },
-    voteObj,
-    {
-      new: true, safe: true, multi: false
-    }
-  )
-  .then((team) => {
-    const pushKey = (req.params.isAdd ? '$push' : '$pull');
-    const pushObj = {};
-    pushObj[pushKey] = { 'vote.receivedVotes': team._id };
+  User.findOne({ _id: req.params.userId })
+  .then((user) => {
     Team.findOneAndUpdate(
       {
-        _id: req.params.voteForThisId
+        collaborators: user.username
       },
-      pushObj,
+      voteObj,
       {
         new: true, safe: true, multi: false
       }
     )
-    .then((newTeam) => {
-      if (!newTeam) {
-        return res.status(200).json({});
-      }
-      return res.status(200).json(newTeam);
+    .then((team) => {
+      const pushKey = (req.params.isAdd ? '$push' : '$pull');
+      const pushObj = {};
+      pushObj[pushKey] = { 'vote.receivedVotes': team._id };
+      Team.findOneAndUpdate(
+        {
+          _id: req.params.voteForThisId
+        },
+        pushObj,
+        {
+          new: true, safe: true, multi: false
+        }
+      )
+      .then((newTeam) => {
+        if (!newTeam) {
+          return res.status(200).json({});
+        }
+        return res.status(200).json(newTeam);
+      });
     });
   });
 }
