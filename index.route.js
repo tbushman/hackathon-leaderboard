@@ -6,6 +6,7 @@ const userRoutes = require('./server/user/user.route');
 const authRoutes = require('./server/auth/auth.route');
 const teamRoutes = require('./server/team/team.route');
 const webhookRoutes = require('./server/webhooks/webhook.route');
+const voteRoutes = require('./server/vote/vote.route');
 const { ifNoUserRedirect } = require('./server/middlewares/user');
 
 const Team = require('./server/team/team.model');
@@ -19,6 +20,7 @@ api.use('/users', userRoutes);
 api.use('/auth', authRoutes);
 api.use('/teams', teamRoutes);
 api.use('/webhook', webhookRoutes);
+api.use('/vote', voteRoutes);
 
 router.get('/', (req, res) => {
   if (req.user) {

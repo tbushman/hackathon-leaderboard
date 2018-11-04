@@ -1,0 +1,29 @@
+extends layout
+block header
+block content
+  div
+    include partials/nav.pug
+    header.jumbotron.bg-secondary.text-white.text-center
+      .container
+        if (session.admin)
+          h2.font-weight-light.mb-0 Votes for the 2018 freeCodeCamp JAMstack Hackathon
+        else
+          h2 You are not supposed to be here.
+    main
+      if (session.admin)
+        .container#flash-container
+
+        .container
+          table.table(cellspacing="0px", width="100%", style="width: 100%;overflow:hidden;")
+            thead
+
+              tr
+                
+                th Team name
+                th Site link
+                th Vote count
+              each team, i in teams
+                tr
+                  td #{team.name}
+                  td #{team.siteUrl}
+                  td #{team.vote.receivedVotes.length}

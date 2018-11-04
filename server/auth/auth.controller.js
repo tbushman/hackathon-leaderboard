@@ -1,7 +1,18 @@
+const Team = require('../team/team.model');
+
 function handlePassportLogin(req, res) {
-  // eslint-disable-next-line no-param-reassign
-  req.session.userId = req.user._id;
-  return res.redirect('/');
+  if (process.env.ADMINS.split(',').indexOf(req.user.username) !== -1) {
+    /* eslint-disable no-param-reassign */
+    req.session.admin = true;
+  }
+  return Team.findOne({ collaborators: req.user.username })
+  .then((team) => {
+    if (!team) req.session.canVote = false;
+    else req.session.canVote = true;
+    req.session.userId = req.user._id;
+    /* eslint-enable no-param-reassign */
+    return res.redirect('/');
+  });
 }
 
 function handleSignout(req, res) {
