@@ -50,7 +50,7 @@ html(lang='en')
         },
         updated: function() {
           var self = this;
-          self.sortBy('buildStatus', true);
+          self.sortBy(self.sortKey, !self.ascending);
         },
         beforeDestroy() {
           var self = this;
