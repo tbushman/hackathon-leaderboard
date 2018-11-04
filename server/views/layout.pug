@@ -22,7 +22,7 @@ html(lang='en')
                 'In-person'
               ) : 'In-person'),
             ascending: true,
-            buildStatuses: ['initial', 'pending', 'complete', 'failed'],
+            buildStatuses: ['complete', 'pending', 'initial', 'failed'],
             columns: {
               buildStatus: 'Build Status',
               name: 'Team Name',
@@ -44,8 +44,12 @@ html(lang='en')
           if (self.teams && self.teams !== '' && self.teams !== []) {
             self.getTeams();
             self.startTeamsPolling();
-            self.sortBy('lighthouse', true);
+            self.sortBy('buildStatus', true);
           }
+        },
+        updated: function() {
+          var self = this;
+          self.sortBy('buildStatus', true);
         },
         beforeDestroy() {
           var self = this;
@@ -83,7 +87,6 @@ html(lang='en')
             })
           },
           sortBy(key, ascending) {
-            console.log(key, ascending)
             var self = this;
             self.ascending = !ascending;
             self.teams.sort(function(a, b){
@@ -94,6 +97,7 @@ html(lang='en')
                 case 'buildStatus':
                   itemA = self.buildStatuses.indexOf(a.buildStatus);
                   itemB = self.buildStatuses.indexOf(b.buildStatus);
+                  break;
                 case 'name':
                   itemA = a.name;
                   itemB = b.name;
@@ -117,8 +121,8 @@ html(lang='en')
                   }) / 5;
                   break;
                 default:
-
               }
+
               switch(ascending) {
                 case true:
                   if (itemA < itemB) {
