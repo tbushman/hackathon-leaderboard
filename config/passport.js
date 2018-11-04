@@ -31,7 +31,7 @@ passport.use(
         githubProfile
       };
       log(githubUser);
-      User.findOrCreate(githubUser, (err, user) => cb(err, user));
+      User.findOne(githubUser, (err, user) => cb(err, user));
     }
   )
 );
