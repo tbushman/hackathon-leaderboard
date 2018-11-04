@@ -48,10 +48,6 @@ html(lang='en')
             self.sortBy(self.sortKey, !self.ascending);
           }
         },
-        updated: function() {
-          var self = this;
-          self.sortBy(self.sortKey, !self.ascending);
-        },
         beforeDestroy() {
           var self = this;
           clearInterval(self.teamsInterval);
