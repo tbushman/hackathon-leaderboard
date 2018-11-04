@@ -1,14 +1,5 @@
-td
-  
-  .form-check.btn-group.btn-group-toggle
-    label.btn.btn-primary(v-text="(votes.indexOf(team._id) !== -1 ? 'selected' : '')", v-bind:class="{ active: votes.indexOf(team._id) !== -1 }")
-    input(
-      type="checkbox",
-      :id="'vote_'+team._id",
-      v-model="votes",
-      :value="team._id",
-      v-on:click="validateVote(team._id, (votes.indexOf(team._id) === -1), $event)",
-      :checked="votes.indexOf(team._id) !== -1")
+if (session.canVote)
+  include vote.pug
 td(v-for="(key, j) in Object.keys(team)", v-if="key === 'buildStatus'")
   // ['initial', 'pending', 'complete', 'failed']
   li.avatar
