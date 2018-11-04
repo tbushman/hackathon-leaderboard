@@ -16,7 +16,8 @@ exports.ifNotOwnTeam400 = function ifNotOwnTeam400(req, res, next) {
   return next();
 };
 
-exports.ifDuplicate400 = function ifDuplicate400(req, res, next) {
+
+exports.ifDuplicate400 = async function ifDuplicate400(req, res, next) {
   const { body } = req;
   const collaborators = Array.isArray(body.collaborators)
     ? body.collaborators
@@ -24,23 +25,16 @@ exports.ifDuplicate400 = function ifDuplicate400(req, res, next) {
         .split(',')
         .map(str => str.trim().replace(/@/g, ''))
         .filter(Boolean);
-  async function returnFiltered() {
-    await new Promise((resolve, reject) =>
-      collaborators.filter(member =>
+  const filtered = (await Promise.all(collaborators.map(member =>
         Team.find({ collaborators: member })
         .then((dup) => {
-          if (dup.length > 0) return false;
-          return true;
-        })
-        .catch((err) => {
-          if (err) {
-            reject(err);
-          }
-        })
-      )
-    );
+          if (dup.length > 0) { return false; }
+          return member;
+        }))
+    )).filter(Boolean);
+
+  if (filtered.length !== collaborators.length) {
+    return res.sendStatus(400);
   }
-  const filtered = returnFiltered();
-  if (filtered.length !== collaborators.length) return res.sendStatus(400);
   return next();
 };
