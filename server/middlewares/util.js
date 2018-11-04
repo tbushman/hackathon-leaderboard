@@ -25,9 +25,9 @@ exports.ifDuplicate400 = async function ifDuplicate400(req, res, next) {
   const { body } = req;
   const collaborators = castMaybeStringToArray(body.collaborators)
     .map(str => str.trim().replace(/@/g, ''))
-    .filter(Boolean);
+    .filter((item, pos, self) => self.indexOf(item) === pos);
   const filtered = (await Promise.all(collaborators.map(member =>
-        Team.find({ collaborators: member })
+        Team.find({ _id: { $ne: req.params.teamId }, collaborators: member })
         .then((dup) => {
           if (dup.length > 0) { return false; }
           return member;
@@ -37,5 +37,7 @@ exports.ifDuplicate400 = async function ifDuplicate400(req, res, next) {
   if (filtered.length !== collaborators.length) {
     return res.sendStatus(400);
   }
+  // eslint-disable-next-line no-param-reassign
+  req.body.collaborators = collaborators;
   return next();
 };

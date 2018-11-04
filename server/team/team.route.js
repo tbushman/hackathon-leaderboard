@@ -23,7 +23,10 @@ router
 router
   .route('/:teamId')
   .get(teamCtrl.single)
-  .post(ifNoUserRedirect(), ifNoBody400, validate(validators.createTeam), teamCtrl.update);
+  .post(ifNoUserRedirect(),
+  ifNoBody400,
+  ifDuplicate400,
+  validate(validators.createTeam), teamCtrl.update);
 
 router
   .route('/delete/:teamId')
