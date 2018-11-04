@@ -69,7 +69,6 @@ html(lang='en')
             var self = this;
             console.log(self.votes)
             if (self.votes.length === 3) {
-              self.votes.pop();
               return;
             } else {
               axios.post(`/api/teams/vote/${self.userId}/${voteForThisId}/${add}`)
