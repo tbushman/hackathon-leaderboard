@@ -26,6 +26,15 @@ const newTeam = {
   collaborators: ['Bouncey', 'raisedadead']
 };
 
+function adjustOneTeamOfTeams(m) {
+  return [...m.collaborators].map(t => `@${t}`);
+}
+
+const teams = Array(3).fill(newTeam);
+const allCollaborators = teams.map((m, i) => (i === 2 ?
+  adjustOneTeamOfTeams(m).join(',') :
+  [...m.collaborators].map(t => t).join(','))).join(',').split(',');
+
 const user = { _id: 123 };
 describe('# Team API', () => {
   describe('create', () => {
@@ -62,10 +71,23 @@ describe('# Team API', () => {
           ...team,
           collaborators: ['Bouncey', 'raisedadead']
         });
+        expect(allCollaborators.indexOf(newTeam.collaborators[0])).to.equal(0);
+        expect(allCollaborators.indexOf(newTeam.collaborators[1])).to.equal(1);
+        expect(Array.isArray(allCollaborators[allCollaborators.length - 1].split('@')))
+          .to.equal(true);
+      });
+      Team.create.restore();
+      sinon.stub(Team, 'create').resolves(teams[teams.length - 1]);
+      create(req, res).then(() => {
+        expect(allCollaborators.indexOf(newTeam.collaborators[0])).to.equal(0);
+        expect(allCollaborators.indexOf(newTeam.collaborators[1])).to.equal(1);
+        expect(Array.isArray(allCollaborators[allCollaborators.length - 1].split('@')))
+          .to.equal(true);
       });
     });
+
     /*
-    it('should call `update` on the User model with the team id', (done) => {
+    it('should call `update` on the Team model with the team id', (done) => {
       const { update } = teamCtrl;
       const request = {
         body: team,
@@ -75,11 +97,12 @@ describe('# Team API', () => {
       const res = mockRes();
 
       update(req, res).then(() => {
-        expect(User.update).to.be.calledWith(user, { teamId: newTeam._id });
+        expect(Team.update).to.be.calledWith(newTeam._id);
         done();
       });
     });
     */
+    
     it('should acknowledge a successful team creation', (done) => {
       const { create } = teamCtrl;
       const request = {
@@ -91,7 +114,6 @@ describe('# Team API', () => {
 
       create(req, res).then(() => {
         const jsonCalledWith = res.json.getCalls()[0].args[0];
-
         expect(jsonCalledWith.acknowledged).to.equal(true);
         done();
       });
