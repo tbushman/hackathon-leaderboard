@@ -21,7 +21,7 @@ api.use('/teams', teamRoutes);
 api.use('/webhook', webhookRoutes);
 
 router.get('/', (req, res) => {
-  if (process.env.OPEN_FOR_REGISTRATION) {
+  if (config.isOpenForRegistrations) {
     /* eslint-disable no-param-reassign */
     req.session.regOpen = true;
   } else {
