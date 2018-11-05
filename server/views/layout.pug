@@ -41,11 +41,11 @@ html(lang='en')
         },
         mounted: function() {
           var self = this;
-          self.log();
           if (self.teams && self.teams !== '' && self.teams !== []) {
             self.getTeams();
             self.startTeamsPolling();
           }
+          
         },
         beforeDestroy() {
           var self = this;
@@ -81,6 +81,14 @@ html(lang='en')
             .then((res) => {
               self.teams = res.data;
               self.sortBy(self.sortKey, !self.ascending);
+              var svgg = document.getElementById('graph');
+              if (svgg) {
+                return self.graph(svgg);
+              }
+
+            })
+            .catch(function(err){
+              console.log(err)
             })
           },
           sortBy(key, ascending) {
@@ -210,8 +218,156 @@ html(lang='en')
               })
             }
           },
-          log: function() {
-            console.log(Object.keys(this.teams[0] || {}))
+          extract(result) {
+            var e = Object.keys(result).reduce(function(k, l){
+              return result[''+k+''] + result[''+l+'']
+            }) 
+            return (e / 5);
+          },
+          graph(svgg){
+            var self = this;
+            var dots = d3.map(self.teams, function(team) {
+              //self.teams.map(function(team){
+              console.log(team)
+              return d3.map(team.lighthouse, function(result){
+                console.log(result)
+                return {
+                  name: team.name,
+                  date: result.date,
+                  avg: self.extract(result)
+                }
+              }) 
+            });
+            
+            console.log(dots)
+            var w = svgg.getBoundingClientRect().width;
+            var h = 200;
+            // set up size
+            var margin = { top: 50, right: 30, bottom: 20, left: 30 };
+            var width = w - margin.left - margin.right;
+            var height = h - margin.top - margin.bottom;
+
+            var color = d3.scaleOrdinal(d3.schemeCategory10);
+            var colorD = d3.map(self.teams, function(d) { return d.name });
+
+            color.domain(colorD);
+            svgg.innerHTML = ''
+            var svg = d3.select(self.$el)
+            .append('svg')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom);
+            var g = svg
+            .append('g')
+            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+
+            var minVal = d3.min(dots, function(c) { return c.avg; });
+            var maxVal = d3.max(dots, function(c) { return c.avg; });
+            var minDate = d3.min(dots, function(c) { return c.date; });
+            var maxDate = d3.max(dots, function(c) { return c.date; });
+            /*var xdomain = d3.extent(d3.map(self.teams,function(team){return d3.map(team.lighthouse,function(d){return d.date})}));
+            var ydomain = d3.extent(d3.map(
+              self.teams,function(team){
+                return d3.map(team.lighthouse,function(d){
+                  return d3.map(Object.keys(d).filter(function(e){
+                    return ['_id','screenshot','date'].indexOf(e) === -1
+                  }), function(c){return d[c]})})}));
+            */
+            var xdomain = self.teams.map(function(team){return team.lighthouse.map(function(d){return d.date})}).flat(2).sort();
+            var ydomain = self.teams.map(function(team){
+                return team.lighthouse.map(function(d){
+                  return Object.keys(d).filter(function(e){
+                    return ['_id','screenshot','date'].indexOf(e) === -1
+                  }).map(function(c){return d[c]})})}).flat(2).sort();
+            /*console.log('xdomain')
+            console.log(xdomain)
+            console.log('ydomain')
+            console.log(ydomain)*/
+            console.log(minVal, maxVal, minDate, maxDate, xdomain, ydomain)
+            // xscale
+            var x = d3.scaleTime().range([0, width]);
+            var y = d3.scaleLinear().range([height, 0]);
+
+            var line = d3.line()
+            .x(function (d, i) {
+              return x(d.date);
+            })
+            .y(function (d, i) {
+              return y(d.value);
+            });
+
+            x.domain(
+              [minDate, maxDate]
+            );
+            y.domain(
+              ydomain
+            );
+
+            var xAxis = d3.axisBottom(x);
+            
+            g.append('g').attr('class', 'x axis')
+            .attr('transform', 'translate(0,' + height + ')')
+            .call(xAxis);
+            g.append('g').attr('class', 'y axis')
+            .call(d3.axisLeft(y));
+            
+            var valueline2 = d3.line()
+              .x(function(d) { return x(d.date); })
+              .y(function(d) { return y(d.avg); });
+              
+            self.teams.forEach(function(team){
+              g.append('path')
+              .data(d3.map(team.lighthouse, function(result){
+                return {
+                  name: team.name,
+                  date: result.date,
+                  avg: self.extract(result)
+                }
+              }))
+              .attr('class', 'line')
+              .attr('d', function (d, i) {
+                return line(d);
+              }).style('stroke', function (d, i) {
+                return color(d.name);
+              })
+            })
+            /*var measurement = 
+              g.selectAll('.measurement')
+              .data(self.teams)
+              .enter().append('g')
+              .attr('class', 'measurement');
+
+            var path = measurement.append('path')
+              .attr('class', 'line')
+              .attr('d', function (d, i) {
+                return line(d.lighthouse);
+              }).style('stroke', function (d, i) {
+                return color(d.name);
+              })
+
+            var label = measurement.append('text')
+              .attr('x', width + 16 )
+              .attr('y', function(d, i){
+                return y(d.avg)
+              })
+              .attr('dy', '.35em')
+              .text(function (d, i) {
+                return d.name.toUpperCase();
+              })
+              .attr('text-anchor', 'end');
+
+            var dot = 
+            g.selectAll('.dot')
+            .data(dots)
+            .enter().append('svg:circle')
+            .attr('class', 'dot')
+            .attr('cx', function(d, i) {
+              return x(d.date)
+            })
+            .attr('cy', function(d, i) { 
+              return y(d.avg)
+            })
+            .attr('r', 6)
+            .style('fill', color('TS'));*/
           }
         }
       })
